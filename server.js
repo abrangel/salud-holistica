@@ -6,9 +6,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import fs from 'fs';
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://mi-app-frontend.netlify.app' //https://salud-holistica.onrender.com
+}));
 app.use(express.json({ limit: '50mb' }));
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
