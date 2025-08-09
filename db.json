@@ -1,0 +1,105 @@
+
+{
+  "medicamentos": [
+    {
+      "id": 1,
+      "nombre": {
+        "es": "Cúrcuma",
+        "en": "Turmeric"
+      },
+      "sinonimos": {
+        "es": ["Curcuma longa", "Azafrán de la India"],
+        "en": ["Curcuma longa", "Indian Saffron"]
+      },
+      "publico_general": {
+        "beneficios_usos": {
+          "es": "Antiinflamatorio, antioxidante, apoyo a la salud de las articulaciones.",
+          "en": "Anti-inflammatory, antioxidant, supports joint health."
+        },
+        "interacciones_riesgos": {
+          "es": "Puede interactuar con anticoagulantes. Riesgo: Moderado.",
+          "en": "May interact with blood thinners. Risk: Moderate."
+        },
+        "efectos_adversos": {
+          "es": "Malestar estomacal, diarrea en dosis altas.",
+          "en": "Stomach upset, diarrhea at high doses."
+        },
+        "advertencias_contraindicaciones": {
+          "es": "Evitar en caso de obstrucción del conducto biliar.",
+          "en": "Avoid in case of bile duct obstruction."
+        }
+      },
+      "profesionales_salud": {
+        "nombre_cientifico": "Curcuma longa",
+        "resumen_clinico": {
+          "es": "La curcumina, el principal componente activo, ha demostrado tener efectos antiinflamatorios al inhibir la ciclooxigenasa (COX) y la lipoxigenasa (LOX).",
+          "en": "Curcumin, the main active component, has shown anti-inflammatory effects by inhibiting cyclooxygenase (COX) and lipoxygenase (LOX)."
+        },
+        "mecanismo_accion": {
+          "es": "Inhibe la activación del factor nuclear kappa B (NF-kB).",
+          "en": "Inhibits the activation of nuclear factor kappa B (NF-kB)."
+        },
+        "interacciones_hierba_medicamento": {
+          "es": "Anticoagulantes (warfarina), antiplaquetarios (aspirina).",
+          "en": "Anticoagulants (warfarin), antiplatelets (aspirin)."
+        },
+        "interacciones_hierba_laboratorio": {
+          "es": "Puede afectar las pruebas de función hepática.",
+          "en": "May affect liver function tests."
+        },
+        "referencias": ["Memorial Sloan Kettering Cancer Center", "NIH"]
+      },
+      "calidad_certificaciones": ["USP Verified", "NSF International"]
+    },
+    {
+      "id": 2,
+      "nombre": {
+        "es": "Valeriana",
+        "en": "Valerian"
+      },
+      "sinonimos": {
+        "es": ["Valeriana officinalis", "Hierba de los gatos"],
+        "en": ["Valeriana officinalis", "All-heal"]
+      },
+      "publico_general": {
+        "beneficios_usos": {
+          "es": "Ayuda para el insomnio y la ansiedad.",
+          "en": "Sleep aid for insomnia and anxiety."
+        },
+        "interacciones_riesgos": {
+          "es": "Puede potenciar el efecto de sedantes. Riesgo: Alto.",
+          "en": "May enhance the effect of sedatives. Risk: High."
+        },
+        "efectos_adversos": {
+          "es": "Somnolencia, mareos, dolor de cabeza.",
+          "en": "Drowsiness, dizziness, headache."
+        },
+        "advertencias_contraindicaciones": {
+          "es": "No conducir ni operar maquinaria pesada después de su consumo.",
+          "en": "Do not drive or operate heavy machinery after consumption."
+        }
+      },
+      "profesionales_salud": {
+        "nombre_cientifico": "Valeriana officinalis",
+        "resumen_clinico": {
+          "es": "Los valepotriatos y el ácido valerénico parecen ser los principales compuestos activos con efectos sedantes y ansiolíticos.",
+          "en": "Valepotriates and valerenic acid appear to be the main active compounds with sedative and anxiolytic effects."
+        },
+        "mecanismo_accion": {
+          "es": "Aumenta la cantidad de ácido gamma-aminobutírico (GABA) en el cerebro.",
+          "en": "Increases the amount of gamma-aminobutyric acid (GABA) in the brain."
+        },
+        "interacciones_hierba_medicamento": {
+          "es": "Benzodiazepinas, barbitúricos, alcohol.",
+          "en": "Benzodiazepines, barbiturates, alcohol."
+        },
+        "interacciones_hierba_laboratorio": {
+          "es": "No se conocen interacciones significativas.",
+          "en": "No significant interactions are known."
+        },
+        "referencias": ["Fitoterapia.net", "Natural Medicines"]
+      },
+      "calidad_certificaciones": []
+    }
+  ]
+}
