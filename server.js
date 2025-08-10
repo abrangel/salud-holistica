@@ -1,4 +1,31 @@
-... first 28 lines hidden ...
+1 // Contenido de server.js
+     2 import dotenv from 'dotenv';
+     3 dotenv.config();
+     4 import express from 'express';
+     5 import cors from 'cors';
+     6 import { GoogleGenerativeAI } from '@google/generative-ai';
+     7 import fs from 'fs';
+     8
+     9 const app = express();
+    10 const port = process.env.PORT || 5000;
+    11
+    12 const frontendUrl = process.env.FRONTEND_URL || 'https://salud-holistica.onrender.com';
+    13 app.use(cors({
+    14   origin: frontendUrl
+    15 }));
+    16 app.use(express.json({ limit: '50mb' }));
+    17
+    18 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    19
+    20 app.get('/', (req, res) => {
+    21   res.status(200).send('Salud Holistica Backend API is running!');
+    22 });
+    23
+    24 const promptTemplate = fs.readFileSync('./prompt-template.txt', 'utf-8');
+    25
+    26 app.post('/api/search', async (req, res) => {
+    27   const { query, lang, image } = req.body;
+    28
     29   if (!query && !image) {
     30     return res.status(400).json({ error: 'Query or image is required' });
     31   }
@@ -8,8 +35,7 @@
     35   let promptText = promptTemplate;
     36
     37   if (image && query) {
-    38     promptText += `Identifica el objeto en la imagen y proporciona información sobre él,
-       considerando el contexto de "${query}".\n`;
+    38     promptText += `Identifica el objeto en la imagen y proporciona información sobre él, considerando el contexto de "${query}".\n`;
     39   } else if (image) {
     40     promptText += `Identifica el objeto en la imagen y proporciona información sobre él.\n`;
     41   } else {
@@ -17,47 +43,35 @@
     43   }
     44
     45   promptText += `El idioma de la respuesta debe ser ${lang}.\n`;
-    46   promptText += 'La respuesta DEBE ser únicamente el objeto JSON, sin texto adicional,
-       explicaciones o formato markdown.\n';
+    46   promptText += 'La respuesta DEBE ser únicamente el objeto JSON, sin texto adicional, explicaciones o formato markdown.\n';
     47   promptText += 'El JSON debe tener la siguiente estructura:\n';
     48   promptText += `
     49         {
     50           "nombre": {"es": "<nombre en español>", "en": "<nombre en inglés>"},
     51           "publico_general": {
-    52             "beneficios_usos": {"es": "<beneficios en español>", "en": "<beneficios en inglés>"
-       },
-    53             "interacciones_riesgos": {"es": "<interacciones en español>", "en": "<interacciones
-       en inglés>"},
-    54             "efectos_adversos": {"es": "<efectos adversos en español>", "en": "<efectos
-       adversos en inglés>"},
-    55             "advertencias_contraindicaciones": {"es": "<advertencias en español>", "en":
-       "<advertencias en inglés>"}
+    52             "beneficios_usos": {"es": "<beneficios en español>", "en": "<beneficios en inglés>"},
+    53             "interacciones_riesgos": {"es": "<interacciones en español>", "en": "<interacciones en inglés>"},
+    54             "efectos_adversos": {"es": "<efectos adversos en español>", "en": "<efectos adversos en inglés>"},
+    55             "advertencias_contraindicaciones": {"es": "<advertencias en español>", "en": "<advertencias en inglés>"}
     56           },
     57           "profesionales_salud": {
     58             "nombre_cientifico": "<nombre científico>",
     59             "resumen_clinico": {"es": "<resumen en español>", "en": "<resumen en inglés>"},
-    60             "mecanismo_accion": {"es": "<mecanismo en español>", "en": "<mecanismo en inglés>"
-       },
-    61             "interacciones_hierba_medicamento": {"es": "<interacciones en español>", "en":
-       "<interacciones en inglés>"},
-    62             "interacciones_hierba_laboratorio": {"es": "<interacciones en español>", "en":
-       "<interacciones en inglés>"},
+    60             "mecanismo_accion": {"es": "<mecanismo en español>", "en": "<mecanismo en inglés>"},
+    61             "interacciones_hierba_medicamento": {"es": "<interacciones en español>", "en": "<interacciones en inglés>"},
+    62             "interacciones_hierba_laboratorio": {"es": "<interacciones en español>", "en": "<interacciones en inglés>"},
     63             "referencias": ["<referencia 1>", "<referencia 2>"]
     64           },
     65           "calidad_certificaciones": ["<certificación 1>", "<certificación 2>"]
     66         },
     67         "presentaciones": ["<presentación 1>", "<presentación 2>"],
     68         "dosis_recomendada": {
-    69           "edad": {"es": "<dosis por edad en español, incluyendo bebés, niños, adolescentes y
-       adultos mayores>", "en": "<dosis por edad en inglés, including infants, children, teenagers,
-       and older adults>"},
-    70           "patologia": {"es": "<dosis por patología en español, si aplica>", "en": "<dosis por
-       pathology in English, if applicable>"},
-    71           "deporte": {"es": "<dosis por deporte en español, si aplica>", "en": "<dosis por
-       deporte en inglés, if applicable>"}
+    69           "edad": {"es": "<dosis por edad en español, incluyendo bebés, niños, adolescentes y adultos mayores>", "en": "<dosis por edad en
+       inglés, including infants, children, teenagers, and older adults>"},
+    70           "patologia": {"es": "<dosis por patología en español, si aplica>", "en": "<dosis por pathology in English, if applicable>"},
+    71           "deporte": {"es": "<dosis por deporte en español, si aplica>", "en": "<dosis por deporte en inglés, if applicable>"}
     72         },
-    73         "omega_balance_info": {"es": "<información sobre el equilibrio omega en español>", "en"
-       : "<omega balance information in English>"}
+    73         "omega_balance_info": {"es": "<información sobre el equilibrio omega en español>", "en": "<omega balance information in English>"}
     74       }`;
     75
     76   const textPart = { text: promptText };
@@ -100,8 +114,7 @@
    113
    114   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
    115
-   116   let assistantPrompt = `Actúa como un robot doctor. Responde a la siguiente pregunta del
-       usuario en ${lang}: "${userQuestion}".
+   116   let assistantPrompt = `Actúa como un robot doctor. Responde a la siguiente pregunta del usuario en ${lang}: "${userQuestion}".
    117   Tu respuesta debe ser concisa y directa.`;
    118
    119   try {
