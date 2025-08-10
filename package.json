@@ -1,20 +1,18 @@
-
-{
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "Backend for Salud Holistica",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "dotenv": "^16.4.5",
-    "@google/generative-ai": "^0.15.0"
-  }
-}
+1 {
+    2   "name": "backend",
+    3   "version": "1.0.0",
+    4   "description": "Backend for Salud Holistica",
+    5   "main": "server.js",
+    6   "scripts": {
+    7     "start": "node server.js"
+    8   },
+    9   "keywords": [],
+   10   "author": "",
+   11   "license": "ISC",
+   12   "dependencies": {
+   13     "cors": "^2.8.5",
+   14     "express": "^4.19.2",
+   15     "dotenv": "^16.4.5",
+   16     "@google/generative-ai": "^0.15.0"
+   17   }
+   18 }

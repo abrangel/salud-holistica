@@ -1,9 +1,9 @@
-1 import dotenv from 'dotenv';
+1 const dotenv = require('dotenv');
      2 dotenv.config();
-     3 import express from 'express';
-     4 import cors from 'cors';
-     5 import { GoogleGenerativeAI } from '@google/generative-ai';
-     6 import fs from 'fs';
+     3 const express = require('express');
+     4 const cors = require('cors');
+     5 const { GoogleGenerativeAI } = require('@google/generative-ai');
+     6 const fs = require('fs');
      7
      8 const app = express();
      9 const port = process.env.PORT || 5000;
