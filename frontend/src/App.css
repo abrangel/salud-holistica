@@ -1,0 +1,329 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  color: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  animation: scaleIn 1s ease-out;
+}
+
+main {
+  padding: 2rem;
+}
+
+.lang-selector button {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: none;
+  background-color: #61dafb;
+  color: #282c34;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.lang-selector button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.search-container input[type="text"] {
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-container input[type="text"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.search-container button, .custom-file-upload {
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-container button:hover, .custom-file-upload:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-container button:disabled, .custom-file-upload.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.mic-button.listening {
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+
+.image-preview-container {
+  margin: 1rem 0;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.image-preview {
+  max-width: 100%;
+  height: auto;
+  max-height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.disclaimer {
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.loader {
+  margin: 2rem auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.error-message {
+  color: #ff416c;
+  background: #ffebee;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem 0;
+}
+
+.results-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.result-item {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: left;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.result-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.result-item h2 {
+  font-size: 1.8rem;
+  color: #764ba2;
+  margin-top: 0;
+}
+
+.section h3 {
+  font-size: 1.2rem;
+  color: #667eea;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section p strong {
+  color: #4a4a4a;
+}
+
+.section.presentations-section p {
+  font-style: italic;
+  color: #555;
+}
+
+.App-footer {
+  padding: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.assistant-container {
+  background: #e0f7fa;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.assistant-container h3 {
+  color: #00796b;
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.assistant-container input[type="text"] {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #b2ebf2;
+  border-radius: 50px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.assistant-container button {
+  background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.assistant-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.assistant-container button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.assistant-response {
+  background: #ffffff;
+  border: 1px solid #b2ebf2;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  text-align: left;
+  white-space: pre-wrap;
+  font-size: 1rem;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.small-loader {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+  border-top-color: #00bcd4;
+  margin: 1rem auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App-header {
+    flex-direction: column;
+  }
+
+  .App-header h1 {
+    margin-bottom: 1rem;
+  }
+
+  .search-container {
+    flex-direction: column;
+    gap: 0.5rem; /* Reduced gap for smaller screens */
+  }
+
+  .search-container input[type="text"] {
+    width: 90%; /* Increased width for better mobile usability */
+    margin-bottom: 0.5rem;
+    margin-right: 0;
+  }
+
+  .search-container button, .custom-file-upload {
+    width: 90%; /* Make buttons full width */
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .search-container div {
+    margin-top: 0.5rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .result-item {
+    padding: 1.5rem;
+  }
+
+  .section h3 {
+    font-size: 1.1rem;
+  }
+}
