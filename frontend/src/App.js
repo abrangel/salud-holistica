@@ -65,7 +65,7 @@ function App() {
     setAssistantResponse('');
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/assistant`, {
+      const response = await axios.post(`https://salud-holistica.onrender.com/api/assistant`, {
         userQuestion: assistantQuery,
         contextResults: results,
         lang: lang
