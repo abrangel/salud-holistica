@@ -1,259 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useSpeechRecognition } from 'react-speech-kit';
-import './App.css';
-
-const certificationLogos = {
-  "NSF International": "https://upload.wikimedia.org/wikipedia/commons/a/a1/NSF_International_logo.svg",
-  "USP Verified": "https://www.quality-supplements.org/images/usp-verified-mark.jpg"
-};
-
-function App() {
-  const { t, i18n } = useTranslation();
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [lang, setLang] = useState('es');
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [error, setError] = useState(null);
-  const [assistantQuery, setAssistantQuery] = useState('');
-  const [assistantResponse, setAssistantResponse] = useState('');
-  const [isAssistantLoading, setIsAssistantLoading] = useState(false);
-
-  const { listen, stop, listening } = useSpeechRecognition({
-    onResult: (result) => {
-      setQuery(result);
-    },
-  });
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setLang(lng);
-  };
-
-  const handleSearch = async () => {
-    if (query.trim() === '' && !imageFile) return;
-
-    setIsSearching(true);
-    setResults([]);
-    setError(null);
-    let base64Image = null;
-    if (imageFile) {
-      base64Image = await toBase64(imageFile);
-    }
-
-    try {
-      const response = await axios.post(`https://salud-holistica.onrender.com/api/search`, { query, lang, image: base64Image });
-      setResults([response.data]);
-    } catch (error) {
-      console.error("Error during search:", error);
-      if (error.response) {
-        setError(error.response.data.error);
-      } else {
-        setError(t('error_searching'));
-      }
-    }
-    setIsSearching(false);
-  };
-
-  const handleAssistantQuery = async () => {
-    if (assistantQuery.trim() === '' || results.length === 0) return;
-
-    setIsAssistantLoading(true);
-    setAssistantResponse('');
-
-    try {
-      const response = await axios.post(`https://salud-holistica.onrender.com/api/assistant`, {
-        userQuestion: assistantQuery,
-        contextResults: results,
-        lang: lang
-      });
-      setAssistantResponse(response.data.response);
-    } catch (error) {
-      console.error("Error during assistant query:", error);
-      setAssistantResponse(t('assistant_error'));
-    }
-    setIsAssistantLoading(false);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
-
-  const toBase64 = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = error => reject(error);
-  });
-
-  const getRiskClass = (risk) => {
-    if (!risk) return '';
-    const riskLower = risk.toLowerCase();
-    if (riskLower.includes(t('risk_high').toLowerCase())) return 'risk-high';
-    if (riskLower.includes(t('risk_moderate').toLowerCase())) return 'risk-moderate';
-    if (riskLower.includes(t('risk_low').toLowerCase())) return 'risk-low';
-    return '';
-  };
-
-  const hasRealDosageInfo = (dosage) => {
-    if (!dosage || Object.keys(dosage).length === 0) {
-      return false;
-    }
-    const genericPhrases = [
-      "no existe una dosis diaria recomendada establecida universalmente",
-      "su uso debe ser moderado y siempre bajo supervisión médica",
-      "la dosis debe ser individualizada y determinada por un profesional de la salud",
-      "no hay evidencia científica que apoye el uso",
-      "no hay evidencia que sugiera una dosis específica"
-    ];
-
-    const checkField = (field) => {
-      const text = dosage[field]?.[lang]?.toLowerCase().trim();
-      if (!text) return false; // Empty or null field is not real info
-      return !genericPhrases.some(phrase => text.includes(phrase));
-    };
-
-    // Check if at least one field has non-generic info
-    return checkField('edad') || checkField('patologia') || checkField('deporte');
-  };
-
-  const isSearchDisabled = (query.trim() === '' && !imageFile) || isSearching;
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>{t('app_title')}</h1>
-        <div className="lang-selector">
-          <button onClick={() => changeLanguage('es')}>ES</button>
-          <button onClick={() => changeLanguage('en')}>EN</button>
-        </div>
-      </header>
-      <main>
-        <div className="search-container">
-          <input 
-            type="text" 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t('search_placeholder')}
-            disabled={isSearching}
-          />
-          <button onClick={listening ? stop : listen} disabled={isSearching} className={`mic-button ${listening ? 'listening' : ''}`}>
-            🎤
-          </button>
-          <label htmlFor="image-upload" className={`custom-file-upload ${isSearching ? 'disabled' : ''}`}>📸</label>
-          <input id="image-upload" type="file" onChange={handleImageChange} accept="image/*" capture="environment" disabled={isSearching} />
-          <button onClick={handleSearch} disabled={isSearchDisabled}>
-            {isSearching ? t('searching_button') : t('search_button')}
-          </button>
-        </div>
-
-        {imagePreview && (
-          <div className="image-preview-container">
-            <img src={imagePreview} alt="Vista previa" className="image-preview" />
-          </div>
-        )}
-
-        <p className="disclaimer">{t('disclaimer')}</p>
-
-        {error && <p className="error-message">{error}</p>}
-
-        {isSearching && <div className="loader"></div>}
-
-        <div className="assistant-container">
-          <h3>{t('assistant_title')}</h3>
-          <input
-            type="text"
-            value={assistantQuery}
-            onChange={(e) => setAssistantQuery(e.target.value)}
-            placeholder={t('assistant_placeholder')}
-            disabled={isAssistantLoading}
-          />
-          <button onClick={handleAssistantQuery} disabled={isAssistantLoading || results.length === 0}>
-            {isAssistantLoading ? t('assistant_loading') : t('assistant_button')}
-          </button>
-          {isAssistantLoading && <div className="loader small-loader"></div>}
-          {assistantResponse && <div className="assistant-response">{assistantResponse}</div>}
-        </div>
-
-        <div className="results-container">
-          {results.map((item, index) => (
-            <div key={index} className="result-item">
-              <h2>{item.nombre[lang]}</h2>
-              
-              <div className="section">
-                <h3>{t('public_section_title')}</h3>
-                <p><strong>{t('benefits_uses_title')}:</strong> {item.publico_general.beneficios_usos[lang]}</p>
-                <p><strong>{t('interactions_risks_title')}:</strong> <span className={getRiskClass(item.publico_general.interacciones_riesgos[lang])}>{item.publico_general.interacciones_riesgos[lang]}</span></p>
-                <p><strong>{t('adverse_effects_title')}:</strong> {item.publico_general.efectos_adversos[lang]}</p>
-                <p><strong>{t('warnings_contraindications_title')}:</strong> {item.publico_general.advertencias_contraindicaciones[lang]}</p>
-              </div>
-
-              <div className="section">
-                <h3>{t('professionals_section_title')}</h3>
-                <p><strong>{t('scientific_name_title')}:</strong> {item.profesionales_salud.nombre_cientifico}</p>
-                <p><strong>{t('clinical_summary_title')}:</strong> {item.profesionales_salud.resumen_clinico[lang]}</p>
-                <p><strong>{t('mechanism_action_title')}:</strong> {item.profesionales_salud.mecanismo_accion[lang]}</p>
-                <p><strong>{t('herb_drug_interactions_title')}:</strong> {item.profesionales_salud.interacciones_hierba_medicamento[lang]}</p>
-                <p><strong>{t('herb_lab_interactions_title')}:</strong> {item.profesionales_salud.interacciones_hierba_laboratorio[lang]}</p>
-                <p><strong>{t('references_title')}:</strong> {item.profesionales_salud.referencias.join(', ')}</p>
-              </div>
-
-              {item.calidad_certificaciones && item.calidad_certificaciones.length > 0 &&
-                <div className="section">
-                  <h3>{t('quality_certifications_title')}</h3>
-                  <div className="cert-logos">
-                    {item.calidad_certificaciones.map(cert => (
-                      certificationLogos[cert] && <img key={cert} src={certificationLogos[cert]} alt={cert} className="cert-logo" />
-                    ))}
-                  </div>
-                </div>
-              }
-
-              {item.presentaciones && item.presentaciones.length > 0 &&
-                <div className="section">
-                  <h3>{t('presentations_title')}</h3>
-                  <p>{item.presentaciones.join(', ')}</p>
-                </div>
-              }
-
-              {item.dosis_recomendada && hasRealDosageInfo(item.dosis_recomendada) && (
-                <div className="section">
-                  <h3>{t('recommended_dosage_title')}</h3>
-                  {item.dosis_recomendada.edad && <p><strong>{t('dosage_age')}:</strong> {item.dosis_recomendada.edad[lang]}</p>}
-                  {item.dosis_recomendada.patologia && <p><strong>{t('dosage_pathology')}:</strong> {item.dosis_recomendada.patologia[lang]}</p>}
-                  {item.dosis_recomendada.deporte && <p><strong>{t('dosage_sport')}:</strong> {item.dosis_recomendada.deporte[lang]}</p>}
-                </div>
-              )}
-
-              {item.omega_balance_info && item.omega_balance_info[lang] && (
-                <div className="section">
-                  <h3>{t('omega_balance_title')}</h3>
-                  <p>{item.omega_balance_info[lang]}</p>
-                </div>
-              )}
-
-              {item.omega_balance_info && item.omega_balance_info[lang] && (
-                <div className="section">
-                  <h3>{t('omega_balance_title')}</h3>
-                  <p>{item.omega_balance_info[lang]}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </main>
-      <footer className="App-footer">
-        <p>{t('trademark')}</p>
-      </footer>
-    </div>
-  );
-}
-
-export default App;
+1 import React, { useState } from 'react';
+    2 import axios from 'axios';
+    3 import './App.css'; // Create React App incluye este archivo para estilos
+    4
+    5 function App() {
+    6   const [query, setQuery] = useState(''); // Estado para guardar lo que el usuario escribe
+    7   const [result, setResult] = useState(null); // Estado para guardar el resultado del backend
+    8   const [error, setError] = useState(''); // Estado para guardar cualquier error
+    9   const [loading, setLoading] = useState(false); // Estado para mostrar un mensaje de "cargando"
+   10
+   11   const handleSearch = async () => {
+   12     if (!query) {
+   13       setError('Por favor, escribe algo para buscar.');
+   14       return;
+   15     }
+   16
+   17     setLoading(true);
+   18     setError('');
+   19     setResult(null);
+   20
+   21     const backendUrl = process.env.REACT_APP_API_URL;
+   22
+   23     try {
+   24       // Hacemos la llamada POST a la ruta /api/search de nuestro backend
+   25       const response = await axios.post(`${backendUrl}/api/search`, {
+   26         query: query,
+   27         lang: 'es' // O el idioma que prefieras
+   28       });
+   29
+   30       setResult(response.data); // Guardamos la respuesta del backend en el estado
+   31
+   32     } catch (err) {
+   33       setError('Hubo un error al contactar al backend. Por favor, intenta de nuevo.');
+   34       console.error(err); // Mostramos el error en la consola para depuración
+   35     } finally {
+   36       setLoading(false); // Dejamos de mostrar el mensaje de "cargando"
+   37     }
+   38   };
+   39
+   40   return (
+   41     <div className="App">
+   42       <header className="App-header">
+   43         <h1>Buscador de Salud Holística</h1>
+   44         <div className="search-container">
+   45           <input
+   46             type="text"
+   47             value={query}
+   48             onChange={(e) => setQuery(e.target.value)}
+   49             placeholder="Escribe una hierba, suplemento, etc."
+   50           />
+   51           <button onClick={handleSearch} disabled={loading}>
+   52             {loading ? 'Buscando...' : 'Buscar'}
+   53           </button>
+   54         </div>
+   55
+   56         {error && <p className="error-message">{error}</p>}
+   57
+   58         {result && (
+   59           <div className="results-container">
+   60             <h2>Resultados para: {result.nombre.es}</h2>
+   61             <pre>
+   62               {/* Usamos JSON.stringify para mostrar el objeto JSON de forma legible */}
+   63               {JSON.stringify(result, null, 2)}
+   64             </pre>
+   65           </div>
+   66         )}
+   67       </header>
+   68     </div>
+   69   );
+   70 }
+   71
+   72 export default App;
